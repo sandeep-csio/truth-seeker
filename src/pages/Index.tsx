@@ -7,9 +7,15 @@ import ProgressBar from "@/components/ProgressBar";
 import { useEvaluation } from "@/context/EvaluationContext";
 import { Button } from "@/components/ui/button";
 import { useProgressStore } from "@/store/use-progress-store";
-import { SignedIn, useAuth, UserButton } from "@clerk/clerk-react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  useAuth,
+  UserButton,
+} from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Download } from "lucide-react";
+import { ChevronRight, Download, Mail } from "lucide-react";
 import { exportToExcel } from "@/utils/fileUtils";
 
 const MainContent = () => {
@@ -45,8 +51,40 @@ const MainContent = () => {
   };
 
   if (!auth.isSignedIn) {
-    navigate("/sign-in");
-    return null;
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+        <div className="text-center mb-8">
+          <div className="flex justify-center">
+            <img
+              src="/logo1.svg"
+              alt="Logo"
+              className=" w-20 h-20 rounded-lg mb-3"
+            />
+          </div>
+
+          <h1 className="text-4xl font-bold text-gray-900">
+            Truth Seeker
+            <span className="text-app-blue"> AI Review</span>
+          </h1>
+          <p className="text-gray-500 mt-2">
+            Efficiently evaluate LLM-generated responses
+          </p>
+        </div>
+
+        <div className="flex flex-row-reverse gap-3">
+          <Button>
+            <SignedOut>
+              <SignInButton mode="modal" />
+            </SignedOut>
+            <Mail />
+          </Button>
+
+          <Button variant="outline">
+            Learn More <ChevronRight />
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
