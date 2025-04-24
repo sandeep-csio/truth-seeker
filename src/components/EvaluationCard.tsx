@@ -184,9 +184,29 @@ export default function EvaluationCard({
             <RadioGroup
               className="flex items-center space-x-2 mt-2"
               value={localItem?.relevance?.charAt(0) || ""}
-              onValueChange={(value) =>
-                updateField("relevance",value)
-              }
+              onValueChange={(value) => {
+                switch (value) {
+                  case "1":
+                    value = "1 (Irrelevant)";
+                    break;
+                  case "2":
+                    value = "2 (Low Relevance)";
+                    break;
+                  case "3":
+                    value = "3 (Moderate Relevance)";
+                    break;
+                  case "4":
+                    value = "4 (High Relevance)";
+                    break;
+                  case "5":
+                    value = "5 (Accurate Relevance)";
+                    break;
+                  default:
+                    value = "1 (Irrelevant)";
+                }
+                console.log("Relevance value: ", value);
+                updateField("relevance", value);
+              }}
             >
               {[1, 2, 3, 4, 5].map((num) => (
                 <div key={num} className="flex flex-col items-center">
