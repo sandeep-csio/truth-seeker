@@ -10,8 +10,9 @@ const Signin = () => {
   const navigate = useNavigate();
 
   if (auth.isSignedIn) {
+    console.log("User is signed in, redirecting to home page...");
     navigate("/");
-    return null;
+    return <>Loading</>;
   }
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
