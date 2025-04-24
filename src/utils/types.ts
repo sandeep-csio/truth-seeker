@@ -5,7 +5,7 @@ export interface EvaluationItem {
   answer: string;
   answer_llm: string;
   agriculture_consensus?: boolean;
-  relevance?: number;
+  relevance?: string;
   isCompleted: boolean;
   factuality?: 'Correct' | 'Partially Correct' | 'Incorrect';
 }

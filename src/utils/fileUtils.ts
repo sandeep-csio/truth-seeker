@@ -85,7 +85,7 @@ const validateAndTransformData = (jsonData: any[]): EvaluationItem[] => {
     answer: String(row.Answers),
     answer_llm: String(row.Answer_LLM),
     agriculture_consensus: row['AGRICULTURE CONSENSUS'] !== undefined ? Boolean(row['AGRICULTURE CONSENSUS']) : undefined,
-    relevance: row['RELEVANCE'] !== undefined ? Number(row['RELEVANCE']) : undefined,
+    relevance: row['RELEVANCE'] !== undefined ? String(row['RELEVANCE']) : undefined,
     factuality: row['FACTUALITY'] !== undefined ? String(row['FACTUALITY']) : undefined
   }));
 };

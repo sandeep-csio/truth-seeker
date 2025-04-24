@@ -130,6 +130,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileProcessed }) => {
 
       setUploadProgress(50);
 
+      console.log("Items: ",items);
+
       if (items.length === 0) {
         throw new Error("No valid data found in the file.");
       }
@@ -139,7 +141,9 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileProcessed }) => {
         id: Date.now().toString(),
         name: projectName.trim(),
         items,
-        currentIndex: 0,
+        currentIndex: items.filter((item) => {
+          return item.agriculture_consensus !== undefined && item.factuality !== undefined && item.relevance !== undefined;
+        }).length,
         completed: items.filter(
           (item) => item.agriculture_consensus !== undefined
         ).length,

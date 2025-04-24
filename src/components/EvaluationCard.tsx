@@ -15,9 +15,9 @@ import { useEvaluation } from "@/context/EvaluationContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useProgressStore } from "@/store/use-progress-store";
 
-export default function EvaluationCard ({
-  handleShownResults
-}:{
+export default function EvaluationCard({
+  handleShownResults,
+}: {
   handleShownResults: () => void;
 }) {
   const {
@@ -105,6 +105,7 @@ export default function EvaluationCard ({
     localItem.factuality !== undefined;
 
   useEffect(() => {
+    console.log("localitemRelevance: ", localItem?.relevance?.charAt(0));
     if (isComplete && !localItem.isCompleted) {
       setCurrentProject({
         ...currentProject,
@@ -182,9 +183,9 @@ export default function EvaluationCard ({
             <Label className="text-base font-medium">Relevance (1-5)</Label>
             <RadioGroup
               className="flex items-center space-x-2 mt-2"
-              value={localItem.relevance?.toString() || ""}
+              value={localItem?.relevance?.charAt(0) || ""}
               onValueChange={(value) =>
-                updateField("relevance", parseInt(value))
+                updateField("relevance",value)
               }
             >
               {[1, 2, 3, 4, 5].map((num) => (
@@ -217,7 +218,10 @@ export default function EvaluationCard ({
             >
               {["Correct", "Partially Correct", "Incorrect"].map((option) => (
                 <div key={option} className="flex items-center space-x-2">
-                  <RadioGroupItem value={option} id={`factuality-${option}`} />
+                  <RadioGroupItem
+                    value={option.toUpperCase()}
+                    id={`factuality-${option}`}
+                  />
                   <Label htmlFor={`factuality-${option}`}>{option}</Label>
                 </div>
               ))}
@@ -236,26 +240,26 @@ export default function EvaluationCard ({
           <span>Previous (←)</span>
         </Button>
 
-      { currentProject.currentIndex < currentProject.items.length - 1 ?
-       
-      <Button
-          onClick={handleNext}
-          className="flex items-center space-x-1 bg-app-blue hover:bg-blue-700"
-        >
-          <span>Next (→)</span>
-          <ChevronRight className="h-4 w-4" />
-        </Button> : 
+        {currentProject.currentIndex < currentProject.items.length - 1 ? (
           <Button
-          onClick={handleShownResults}
-          className="flex items-center space-x-1 bg-app-blue hover:bg-blue-700"
-        >
-          <span>Export Results</span>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-        }
+            onClick={handleNext}
+            className="flex items-center space-x-1 bg-app-blue hover:bg-blue-700"
+          >
+            <span>Next (→)</span>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Button
+            onClick={handleShownResults}
+            className="flex items-center space-x-1 bg-app-blue hover:bg-blue-700"
+          >
+            <span>Export Results</span>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
-};
+}
 
 // export default EvaluationCard;
