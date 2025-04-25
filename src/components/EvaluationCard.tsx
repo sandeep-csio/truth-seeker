@@ -16,6 +16,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useProgressStore } from "@/store/use-progress-store";
 import { useWordsMatchingStore } from "@/store/use-word-matching";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 export default function EvaluationCard({
   handleShownResults,
@@ -39,28 +46,31 @@ export default function EvaluationCard({
   const getMatchingWords = (text1: string, text2: string) => {
     // Normalize the text by splitting on Unicode letters and numbers
     const normalize = (text: string) =>
-      new Set((text.match(/[\p{L}\p{N}]+/gu) || []).map(w => w.toLowerCase()));
-  
+      new Set(
+        (text.match(/[\p{L}\p{N}]+/gu) || []).map((w) => w.toLowerCase())
+      );
+
     const words1 = normalize(text1);
     const words2 = normalize(text2);
-  
+
     // Return the common words
-    const common = [...words1].filter(word => words2.has(word));
+    const common = [...words1].filter((word) => words2.has(word));
     return common;
   };
-  
-  const highlightMatchingWords = (text: string, matchingWords: string[]) => {
 
+  const highlightMatchingWords = (text: string, matchingWords: string[]) => {
     console.log("Matching words: ", matchingWords);
     // Create a regex pattern to match the words exactly and avoid partial matches
     const regex = new RegExp(`\\b(${matchingWords.join("|")})\\b`, "giu");
-  
+
     // Split the text into parts based on the regex match
     const parts = text.split(regex);
-  
+
     // Map over the parts and highlight the matching words
     return parts.map((part, i) =>
-      matchingWords.some(word => word.toLowerCase() === part.toLowerCase()) ? (
+      matchingWords.some(
+        (word) => word.toLowerCase() === part.toLowerCase()
+      ) ? (
         <mark key={i} className="bg-yellow-200">
           {part}
         </mark>
@@ -69,9 +79,6 @@ export default function EvaluationCard({
       )
     );
   };
-  
-  
-  
 
   // Update local state when currentItem changes
   useEffect(() => {
@@ -132,10 +139,13 @@ export default function EvaluationCard({
   };
 
   const handleNext = () => {
-    if(!localItem.agriculture_consensus || !localItem.relevance || !localItem.factuality) {
+    if (
+      localItem.agriculture_consensus === undefined ||
+      !localItem.relevance ||
+      !localItem.factuality
+    ) {
       toast.error("Please fill all the fields before proceeding");
       return;
-
     }
     nextItem();
   };
@@ -238,13 +248,31 @@ export default function EvaluationCard({
               Agriculture Consensus
             </Label>
             <div className="flex items-center mt-2 space-x-3">
-              <Switch
+              {/* <Switch
                 checked={!!localItem.agriculture_consensus}
                 onCheckedChange={(checked) =>
                   updateField("agriculture_consensus", checked)
                 }
-              />
-              <span>{localItem.agriculture_consensus ? "Yes" : "No"}</span>
+              /> */}
+
+              <Select
+                value={localItem?.agriculture_consensus === undefined ? "Not Selected" : localItem.agriculture_consensus === true ? "Yes" :localItem.agriculture_consensus === false? "No" : "Not Selected"}
+                defaultValue="Not Selected"
+                onValueChange={(value) => {
+                  
+                  updateField("agriculture_consensus", value === "Yes");
+                }}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Theme" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Yes">True</SelectItem>
+                  <SelectItem value="No">False</SelectItem>
+                  <SelectItem value="Not Selected">Not Selected</SelectItem>
+                </SelectContent>
+              </Select>
+              {/* <span>{localItem.agriculture_consensus ? "Yes" : "No"}</span> */}
             </div>
           </div>
 
