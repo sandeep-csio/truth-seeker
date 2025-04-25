@@ -245,7 +245,7 @@ export default function EvaluationCard({
           {/* Agriculture Consensus */}
           <div>
             <Label className="text-base font-medium">
-              Agriculture Consensus
+              Agriculture Consensus *
             </Label>
             <div className="flex items-center mt-2 space-x-3">
               {/* <Switch
@@ -278,7 +278,7 @@ export default function EvaluationCard({
 
           {/* Relevance */}
           <div className=" max-w-fit px-5">
-            <Label className="text-base font-medium">Relevance (1-5)</Label>
+            <Label className="text-base font-medium">Relevance (1-5) *</Label>
             <RadioGroup
               className="flex items-center space-x-2 mt-2"
               value={localItem?.relevance?.charAt(0) || ""}
@@ -326,7 +326,7 @@ export default function EvaluationCard({
 
           {/* Factuality */}
           <div>
-            <Label className="text-base font-medium">Factuality</Label>
+            <Label className="text-base font-medium">Factuality *</Label>
             <RadioGroup
               className="space-y-1 mt-2"
               value={localItem.factuality || ""}
