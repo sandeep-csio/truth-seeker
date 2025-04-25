@@ -14,6 +14,8 @@ import { EvaluationItem } from "@/utils/types";
 import { useEvaluation } from "@/context/EvaluationContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useProgressStore } from "@/store/use-progress-store";
+import { useWordsMatchingStore } from "@/store/use-word-matching";
+import { toast } from "sonner";
 
 export default function EvaluationCard({
   handleShownResults,
@@ -32,6 +34,44 @@ export default function EvaluationCard({
   const [localItem, setLocalItem] = useState<EvaluationItem | null>(
     currentItem
   );
+  const { isEnabled, set } = useWordsMatchingStore();
+
+  const getMatchingWords = (text1: string, text2: string) => {
+    // Normalize the text by splitting on Unicode letters and numbers
+    const normalize = (text: string) =>
+      new Set((text.match(/[\p{L}\p{N}]+/gu) || []).map(w => w.toLowerCase()));
+  
+    const words1 = normalize(text1);
+    const words2 = normalize(text2);
+  
+    // Return the common words
+    const common = [...words1].filter(word => words2.has(word));
+    return common;
+  };
+  
+  const highlightMatchingWords = (text: string, matchingWords: string[]) => {
+
+    console.log("Matching words: ", matchingWords);
+    // Create a regex pattern to match the words exactly and avoid partial matches
+    const regex = new RegExp(`\\b(${matchingWords.join("|")})\\b`, "giu");
+  
+    // Split the text into parts based on the regex match
+    const parts = text.split(regex);
+  
+    // Map over the parts and highlight the matching words
+    return parts.map((part, i) =>
+      matchingWords.some(word => word.toLowerCase() === part.toLowerCase()) ? (
+        <mark key={i} className="bg-yellow-200">
+          {part}
+        </mark>
+      ) : (
+        part
+      )
+    );
+  };
+  
+  
+  
 
   // Update local state when currentItem changes
   useEffect(() => {
@@ -92,6 +132,11 @@ export default function EvaluationCard({
   };
 
   const handleNext = () => {
+    if(!localItem.agriculture_consensus || !localItem.relevance || !localItem.factuality) {
+      toast.error("Please fill all the fields before proceeding");
+      return;
+
+    }
     nextItem();
   };
 
@@ -105,7 +150,8 @@ export default function EvaluationCard({
     localItem.factuality !== undefined;
 
   useEffect(() => {
-    console.log("localitemRelevance: ", localItem?.relevance?.charAt(0));
+    console.log("initiated");
+
     if (isComplete && !localItem.isCompleted) {
       setCurrentProject({
         ...currentProject,
@@ -120,6 +166,11 @@ export default function EvaluationCard({
       });
     }
   }, [localItem]);
+
+  const matchingWords = getMatchingWords(
+    localItem.answer,
+    localItem.answer_llm
+  );
 
   return (
     <Card className="w-full max-w-8xl mx-auto text-[1.3rem]">
@@ -144,11 +195,25 @@ export default function EvaluationCard({
 
       <CardContent className="pt-4 space-y-6">
         <div>
-          <h3 className="text-lg font-medium text-app-teal mb-2">
-            Ground Truth Answer
-          </h3>
+          <div className="flex w-full justify-between items-center mb-2 flex-wrap">
+            <h3 className="text-lg font-medium text-app-teal mb-2">
+              Ground Truth Answer
+            </h3>
+
+            <div className="flex items-center gap-2">
+              <Label className="text-base font-medium">Words Highlighter</Label>
+              <Switch
+                checked={isEnabled}
+                onCheckedChange={(checked) => set(checked)}
+              />
+            </div>
+          </div>
           <div className="p-3 bg-app-light-teal rounded-md">
-            <p className="text-gray-700">{localItem.answer}</p>
+            <p className="text-gray-700">
+              {isEnabled
+                ? highlightMatchingWords(localItem.answer, matchingWords)
+                : localItem.answer}
+            </p>
           </div>
         </div>
 
@@ -157,7 +222,12 @@ export default function EvaluationCard({
             LLM Generated Answer
           </h3>
           <div className="p-3 bg-app-light-blue rounded-md">
-            <p className="text-gray-700">{localItem.answer_llm}</p>
+            <p className="text-gray-700">
+              {" "}
+              {isEnabled
+                ? highlightMatchingWords(localItem.answer_llm, matchingWords)
+                : localItem.answer_llm}
+            </p>
           </div>
         </div>
 

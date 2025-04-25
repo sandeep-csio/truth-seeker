@@ -45,6 +45,7 @@ export const EvaluationProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   // Save to localStorage whenever the project changes
+  // Configure database here as well
   useEffect(() => {
     if (currentProject) {
       localStorage.setItem(
