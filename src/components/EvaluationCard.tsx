@@ -41,6 +41,7 @@ export default function EvaluationCard({
   const [localItem, setLocalItem] = useState<EvaluationItem | null>(
     currentItem
   );
+
   const { isEnabled, set } = useWordsMatchingStore();
 
   const getMatchingWords = (text1: string, text2: string) => {
@@ -182,6 +183,8 @@ export default function EvaluationCard({
     localItem.answer_llm
   );
 
+  console.log("Factuality", localItem.factuality);
+
   return (
     <Card className="w-full max-w-8xl mx-auto text-[1.3rem]">
       <CardHeader className="border-b">
@@ -256,10 +259,17 @@ export default function EvaluationCard({
               /> */}
 
               <Select
-                value={localItem?.agriculture_consensus === undefined ? "Not Selected" : localItem.agriculture_consensus === true ? "Yes" :localItem.agriculture_consensus === false? "No" : "Not Selected"}
+                value={
+                  localItem?.agriculture_consensus === undefined
+                    ? "Not Selected"
+                    : localItem.agriculture_consensus === true
+                    ? "Yes"
+                    : localItem.agriculture_consensus === false
+                    ? "No"
+                    : "Not Selected"
+                }
                 defaultValue="Not Selected"
                 onValueChange={(value) => {
-                  
                   updateField("agriculture_consensus", value === "Yes");
                 }}
               >
@@ -329,7 +339,7 @@ export default function EvaluationCard({
             <Label className="text-base font-medium">Factuality *</Label>
             <RadioGroup
               className="space-y-1 mt-2"
-              value={localItem.factuality || ""}
+              value={localItem.factuality?.toUpperCase() || ""}
               onValueChange={(value) =>
                 updateField("factuality", value as EvaluationItem["factuality"])
               }
