@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { EvaluationItem, EvaluationProject } from "@/utils/types";
-import { toast } from "@/hooks/use-toast";
+// import { toast } from "@/hooks/use-toast";
 import { useProgressStore } from "@/store/use-progress-store";
+import { toast } from "sonner";
 
 interface EvaluationContextType {
   currentProject: EvaluationProject | null;
@@ -34,9 +35,14 @@ export const EvaluationProvider: React.FC<{ children: React.ReactNode }> = ({
         const parsed = JSON.parse(savedProject);
         parsed.lastUpdated = new Date(parsed.lastUpdated);
         setCurrentProject(parsed);
-        toast({
-          title: "Project loaded",
+        // toast({
+        //   title: "Project loaded",
+        //   description: `Resumed project "${parsed.name}" with ${parsed.completed}/${parsed.items.length} evaluations completed.`,
+        // });
+
+        toast.success("Project loaded", {
           description: `Resumed project "${parsed.name}" with ${parsed.completed}/${parsed.items.length} evaluations completed.`,
+          position: "top-center",
         });
       } catch (e) {
         console.error("Failed to load saved project", e);
@@ -90,10 +96,16 @@ export const EvaluationProvider: React.FC<{ children: React.ReactNode }> = ({
       lastUpdated: new Date(),
     });
 
-    toast({
-      title: "Evaluation saved",
+    // toast({
+    //   title: "Evaluation saved",
+    //   description: "Your evaluation has been saved automatically.",
+    //   variant: "default",
+
+    // });
+
+    toast.success("Evaluation saved", {
       description: "Your evaluation has been saved automatically.",
-      variant: "default",
+      position: "top-center",
     });
   };
 

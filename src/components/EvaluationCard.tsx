@@ -145,7 +145,9 @@ export default function EvaluationCard({
       !localItem.relevance ||
       !localItem.factuality
     ) {
-      toast.error("Please fill all the fields before proceeding");
+      toast.error("Please fill all the fields before proceeding",{
+        position:"top-center"
+      });
       return;
     }
     nextItem();
