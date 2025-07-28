@@ -140,16 +140,16 @@ export default function EvaluationCard({
   };
 
   const handleNext = () => {
-    if (
-      localItem.agriculture_consensus === undefined ||
-      !localItem.relevance ||
-      !localItem.factuality
-    ) {
-      toast.error("Please fill all the fields before proceeding",{
-        position:"top-center"
-      });
-      return;
-    }
+    // if (
+    //   localItem.agriculture_consensus === undefined ||
+    //   !localItem.relevance ||
+    //   !localItem.factuality
+    // ) {
+    //   toast.error("Please fill all the fields before proceeding",{
+    //     position:"top-center"
+    //   });
+    //   return;
+    // }
     nextItem();
   };
 
