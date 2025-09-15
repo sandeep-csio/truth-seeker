@@ -8,6 +8,7 @@ export interface EvaluationItem {
   relevance?: string;
   isCompleted: boolean;
   factuality?: 'Correct' | 'Partially Correct' | 'Incorrect';
+  score?: number;
 }
 
 export interface EvaluationProject {

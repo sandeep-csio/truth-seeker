@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 import { EvaluationItem } from "@/utils/types";
 import { useEvaluation } from "@/context/EvaluationContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -140,16 +141,20 @@ export default function EvaluationCard({
   };
 
   const handleNext = () => {
-    // if (
-    //   localItem.agriculture_consensus === undefined ||
-    //   !localItem.relevance ||
-    //   !localItem.factuality
-    // ) {
-    //   toast.error("Please fill all the fields before proceeding",{
-    //     position:"top-center"
-    //   });
-    //   return;
-    // }
+//     // if (
+//     //   localItem.agriculture_consensus === undefined ||
+//     //   !localItem.relevance ||
+//     //   !localItem.factuality
+//     // ) {
+// <<<<<<< Score
+//     //   toast.error("Please fill all the required fields before proceeding",{
+// =======
+//     //   toast.error("Please fill all the fields before proceeding",{
+// >>>>>>> main
+//     //     position:"top-center"
+//     //   });
+//     //   return;
+//     // }
     nextItem();
   };
 
@@ -212,7 +217,7 @@ export default function EvaluationCard({
         <div>
           <div className="flex w-full justify-between items-center mb-2 flex-wrap">
             <h3 className="text-lg font-medium text-app-teal mb-2">
-              Ground Truth Answer
+              Reference
             </h3>
 
             <div className="flex items-center gap-2">
@@ -234,7 +239,7 @@ export default function EvaluationCard({
 
         <div>
           <h3 className="text-lg font-medium text-app-blue mb-2">
-            LLM Generated Answer
+            Translated Output
           </h3>
           <div className="p-3 bg-app-light-blue rounded-md">
             <p className="text-gray-700">
@@ -246,116 +251,134 @@ export default function EvaluationCard({
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 pt-4 border-t">
-          {/* Agriculture Consensus */}
-          <div>
-            <Label className="text-base font-medium">
-              Agriculture Consensus *
-            </Label>
-            <div className="flex items-center mt-2 space-x-3">
-              {/* <Switch
-                checked={!!localItem.agriculture_consensus}
-                onCheckedChange={(checked) =>
-                  updateField("agriculture_consensus", checked)
-                }
-              /> */}
+        <div className="pt-4 border-t">
+          {/* All evaluation fields in one row */}
+          <div className="flex flex-wrap gap-6 items-start justify-around">
+            {/* Agriculture Consensus */}
+            <div className="flex-shrink-0">
+              <Label className="text-base font-medium">
+                Agriculture Consensus *
+              </Label>
+              <div className="flex items-center mt-2 space-x-3">
+                <Select
+                  value={
+                    localItem?.agriculture_consensus === undefined
+                      ? "Not Selected"
+                      : localItem.agriculture_consensus === true
+                      ? "Yes"
+                      : localItem.agriculture_consensus === false
+                      ? "No"
+                      : "Not Selected"
+                  }
+                  defaultValue="Not Selected"
+                  onValueChange={(value) => {
+                    updateField("agriculture_consensus", value === "Yes");
+                  }}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Theme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Yes">True</SelectItem>
+                    <SelectItem value="No">False</SelectItem>
+                    <SelectItem value="Not Selected">Not Selected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-              <Select
-                value={
-                  localItem?.agriculture_consensus === undefined
-                    ? "Not Selected"
-                    : localItem.agriculture_consensus === true
-                    ? "Yes"
-                    : localItem.agriculture_consensus === false
-                    ? "No"
-                    : "Not Selected"
-                }
-                defaultValue="Not Selected"
+            {/* Relevance */}
+            <div className="flex-shrink-0">
+              <Label className="text-base font-medium">Relevance (1-5) *</Label>
+              <RadioGroup
+                className="flex items-center space-x-2 mt-2"
+                value={localItem?.relevance?.charAt(0) || ""}
                 onValueChange={(value) => {
-                  updateField("agriculture_consensus", value === "Yes");
+                  switch (value) {
+                    case "1":
+                      value = "1 (Irrelevant)";
+                      break;
+                    case "2":
+                      value = "2 (Low Relevance)";
+                      break;
+                    case "3":
+                      value = "3 (Moderate Relevance)";
+                      break;
+                    case "4":
+                      value = "4 (High Relevance)";
+                      break;
+                    case "5":
+                      value = "5 (Accurate Relevance)";
+                      break;
+                    default:
+                      value = "1 (Irrelevant)";
+                  }
+                  console.log("Relevance value: ", value);
+                  updateField("relevance", value);
                 }}
               >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Theme" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">True</SelectItem>
-                  <SelectItem value="No">False</SelectItem>
-                  <SelectItem value="Not Selected">Not Selected</SelectItem>
-                </SelectContent>
-              </Select>
-              {/* <span>{localItem.agriculture_consensus ? "Yes" : "No"}</span> */}
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <div key={num} className="flex flex-col items-center">
+                    <RadioGroupItem
+                      value={num.toString()}
+                      id={`relevance-${num}`}
+                    />
+                    <Label htmlFor={`relevance-${num}`} className="text-xs mt-1">
+                      {num}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>Not relevant</span>
+                <span>Very relevant</span>
+              </div>
             </div>
-          </div>
 
-          {/* Relevance */}
-          <div className=" max-w-fit px-5">
-            <Label className="text-base font-medium">Relevance (1-5) *</Label>
-            <RadioGroup
-              className="flex items-center space-x-2 mt-2"
-              value={localItem?.relevance?.charAt(0) || ""}
-              onValueChange={(value) => {
-                switch (value) {
-                  case "1":
-                    value = "1 (Irrelevant)";
-                    break;
-                  case "2":
-                    value = "2 (Low Relevance)";
-                    break;
-                  case "3":
-                    value = "3 (Moderate Relevance)";
-                    break;
-                  case "4":
-                    value = "4 (High Relevance)";
-                    break;
-                  case "5":
-                    value = "5 (Accurate Relevance)";
-                    break;
-                  default:
-                    value = "1 (Irrelevant)";
+            {/* Factuality */}
+            <div className="flex-shrink-0">
+              <Label className="text-base font-medium">Factuality *</Label>
+              <RadioGroup
+                className="space-y-1 mt-2"
+                value={localItem.factuality?.toUpperCase() || ""}
+                onValueChange={(value) =>
+                  updateField("factuality", value as EvaluationItem["factuality"])
                 }
-                console.log("Relevance value: ", value);
-                updateField("relevance", value);
-              }}
-            >
-              {[1, 2, 3, 4, 5].map((num) => (
-                <div key={num} className="flex flex-col items-center">
-                  <RadioGroupItem
-                    value={num.toString()}
-                    id={`relevance-${num}`}
-                  />
-                  <Label htmlFor={`relevance-${num}`} className="text-xs mt-1">
-                    {num}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Not relevant</span>
-              <span>Very relevant</span>
+              >
+                {["Correct", "Partially Correct", "Incorrect"].map((option) => (
+                  <div key={option} className="flex items-center space-x-2">
+                    <RadioGroupItem
+                      value={option.toUpperCase()}
+                      id={`factuality-${option}`}
+                    />
+                    <Label htmlFor={`factuality-${option}`}>{option}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </div>
-          </div>
 
-          {/* Factuality */}
-          <div>
-            <Label className="text-base font-medium">Factuality *</Label>
-            <RadioGroup
-              className="space-y-1 mt-2"
-              value={localItem.factuality?.toUpperCase() || ""}
-              onValueChange={(value) =>
-                updateField("factuality", value as EvaluationItem["factuality"])
-              }
-            >
-              {["Correct", "Partially Correct", "Incorrect"].map((option) => (
-                <div key={option} className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value={option.toUpperCase()}
-                    id={`factuality-${option}`}
-                  />
-                  <Label htmlFor={`factuality-${option}`}>{option}</Label>
-                </div>
-              ))}
-            </RadioGroup>
+            {/* Score */}
+            <div className="flex-shrink-0">
+              <Label className="text-base font-medium">Score (0-100)</Label>
+              <p className="text-sm text-gray-600 mb-2">
+                Enter a numerical score
+              </p>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                value={localItem.score || ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const numValue = value === "" ? undefined : Number(value);
+                  if (numValue === undefined || (numValue >= 0 && numValue <= 100)) {
+                    updateField("score", numValue);
+                  }
+                }}
+                placeholder="0-100"
+                className="w-[120px]"
+              />
+            </div>
           </div>
         </div>
       </CardContent>
