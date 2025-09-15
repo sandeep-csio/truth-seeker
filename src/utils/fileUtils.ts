@@ -86,7 +86,9 @@ const validateAndTransformData = (jsonData: any[]): EvaluationItem[] => {
     answer_llm: String(row.Answer_LLM),
     agriculture_consensus: row['AGRICULTURE CONSENSUS'] !== undefined ? Boolean(row['AGRICULTURE CONSENSUS']) : undefined,
     relevance: row['RELEVANCE'] !== undefined ? String(row['RELEVANCE']) : undefined,
-    factuality: row['FACTUALITY'] !== undefined ? String(row['FACTUALITY']) : undefined
+    factuality: row['FACTUALITY'] !== undefined ? String(row['FACTUALITY']) as EvaluationItem['factuality'] : undefined,
+    score: row['SCORE'] !== undefined ? Number(row['SCORE']) : undefined,
+    isCompleted: false
   }));
 };
 
@@ -99,7 +101,8 @@ export const exportToExcel = (items: EvaluationItem[], projectName: string) => {
     'Answer_LLM': item.answer_llm,
     'AGRICULTURE CONSENSUS': item.agriculture_consensus,
     'RELEVANCE': item.relevance,
-    'FACTUALITY': item.factuality
+    'FACTUALITY': item.factuality,
+    'SCORE': item.score || ''
   }));
   
   // Create a new workbook
