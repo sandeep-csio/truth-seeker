@@ -141,16 +141,20 @@ export default function EvaluationCard({
   };
 
   const handleNext = () => {
-    // if (
-    //   localItem.agriculture_consensus === undefined ||
-    //   !localItem.relevance ||
-    //   !localItem.factuality
-    // ) {
-    //   toast.error("Please fill all the required fields before proceeding",{
-    //     position:"top-center"
-    //   });
-    //   return;
-    // }
+//     // if (
+//     //   localItem.agriculture_consensus === undefined ||
+//     //   !localItem.relevance ||
+//     //   !localItem.factuality
+//     // ) {
+// <<<<<<< Score
+//     //   toast.error("Please fill all the required fields before proceeding",{
+// =======
+//     //   toast.error("Please fill all the fields before proceeding",{
+// >>>>>>> main
+//     //     position:"top-center"
+//     //   });
+//     //   return;
+//     // }
     nextItem();
   };
 
